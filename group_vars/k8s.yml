@@ -1,0 +1,5 @@
+k8s_cluster:
+  node_subnet: 10.0.0.0/24
+  cluster_ip_subnet: 10.32.0.0/24
+  etcd_cluster: "k8s1=https://10.0.0.11:2380,k8s2=https://10.0.0.12:2380,k8s3=https://10.0.0.13:2380"
+  etcd_servers: "https://10.0.0.11:2379,https://10.0.0.12:2379,https://10.0.0.13:2379"

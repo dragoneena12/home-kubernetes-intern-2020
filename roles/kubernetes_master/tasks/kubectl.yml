@@ -1,0 +1,6 @@
+- name: download kubectl binary
+  become: yes
+  get_url:
+    url: https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/arm64/kubectl
+    dest: /usr/local/bin/
+    mode: 755

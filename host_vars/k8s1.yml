@@ -1,0 +1,5 @@
+hostname: k8s1
+priority: 150
+k8s:
+  internal_ip: 10.0.0.11
+  pod_subnet: 10.1.0.0/24

@@ -1,0 +1,5 @@
+- include_tasks: etcd.yml
+- include_tasks: kube-apiserver.yml
+- include_tasks: kube-controller-manager.yml
+- include_tasks: kube-scheduler.yml
+- include_tasks: kubectl.yml

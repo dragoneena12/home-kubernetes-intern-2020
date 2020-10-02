@@ -1,0 +1,16 @@
+vrrp_script chk_haproxy {
+    script "systemctl is-active haproxy"
+}
+
+vrrp_instance VI_1 {
+    state MASTER
+    interface eth0
+    virtual_router_id 1
+    priority {{ priority }}
+    virtual_ipaddress {
+       10.0.0.10
+    }
+    track_script {
+        chk_haproxy
+    }
+}

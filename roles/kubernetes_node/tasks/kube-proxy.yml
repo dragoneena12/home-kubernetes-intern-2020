@@ -1,0 +1,38 @@
+- name: download kube-proxy binary
+  become: yes
+  get_url:
+    url: https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/arm64/kube-proxy
+    dest: /usr/local/bin/
+    mode: 755
+
+- name: make /var/lib/kube-proxy directory
+  become: yes
+  file:
+    path: /var/lib/kube-proxy
+    state: directory
+
+- name: Copy kubeconfig files
+  become: yes
+  copy:
+    src: kubeconfig/kube-proxy.kubeconfig
+    dest: /var/lib/kube-proxy/kubeconfig
+
+- name: Put kube-proxy-config.yaml
+  become: yes
+  template:
+    src: kube-proxy-config.yaml.j2
+    dest: /var/lib/kube-proxy/kube-proxy-config.yaml
+
+- name: Put kube-proxy.service
+  become: yes
+  template:
+    src: kube-proxy.service.j2
+    dest: /etc/systemd/system/kube-proxy.service
+
+- name: Start kube-proxy daemon
+  become: yes
+  systemd:
+    name: kube-proxy
+    enabled: yes
+    state: restarted
+    daemon_reload: yes

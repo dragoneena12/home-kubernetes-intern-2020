@@ -1,0 +1,4 @@
+- include_tasks: prepare.yml
+- include_tasks: lb.yml
+- include_tasks: kubelet.yml
+- include_tasks: kube-proxy.yml

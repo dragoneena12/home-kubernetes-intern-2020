@@ -1,0 +1,34 @@
+- name: install packages
+  become: yes
+  apt:
+    name:
+      - haproxy
+      - keepalived
+
+- name: Put haproxy.cfg
+  become: yes
+  template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+
+- name: Put keepalived.conf
+  become: yes
+  template:
+    src: keepalived.conf.j2
+    dest: /etc/keepalived/keepalived.conf
+
+- name: Start haproxy daemon
+  become: yes
+  systemd:
+    name: haproxy
+    enabled: yes
+    state: restarted
+    daemon_reload: yes
+
+- name: Start keepalived daemon
+  become: yes
+  systemd:
+    name: keepalived
+    enabled: yes
+    state: restarted
+    daemon_reload: yes

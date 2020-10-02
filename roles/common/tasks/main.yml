@@ -1,0 +1,27 @@
+- name: Install standard components
+  become: yes
+  apt:
+    name:
+      - git
+      - vim
+
+- name: Copy publickey
+  become: yes
+  copy: src=~/.ssh/id_ed25519.pub dest=~/.ssh/authorized_keys
+
+- name: Set a hostname
+  become: yes
+  hostname:
+    name: "{{ hostname }}"
+
+- name: Set /etc/hosts
+  become: yes
+  blockinfile:
+    dest: /etc/hosts
+    block: |
+      {{ item.ip }} {{ item.name }}
+    marker: "# {mark} ANSIBLE MANAGED BLOCK {{ item.name }}"
+  loop:
+    - { name: k8s1, ip: '{{ hostvars["k8s1"].k8s.internal_ip }}' }
+    - { name: k8s2, ip: '{{ hostvars["k8s2"].k8s.internal_ip }}' }
+    - { name: k8s3, ip: '{{ hostvars["k8s3"].k8s.internal_ip }}' }

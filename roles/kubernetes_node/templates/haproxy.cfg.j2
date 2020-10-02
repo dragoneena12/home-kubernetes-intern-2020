@@ -1,0 +1,11 @@
+frontend main
+    default_backend    CP
+    bind *:6444
+    mode tcp
+
+backend CP
+    mode tcp
+    balance    roundrobin
+    server    CP1  10.0.0.11:6443  check
+    server    CP2  10.0.0.12:6443  check
+    server    CP3  10.0.0.13:6443  check

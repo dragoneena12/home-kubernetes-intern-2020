@@ -1,0 +1,54 @@
+# - name: Download etcd tarball
+#   become: yes
+#   get_url:
+#     url: https://github.com/etcd-io/etcd/releases/download/v3.4.13/etcd-v3.4.13-linux-arm64.tar.gz
+#     dest: ~/
+
+- name: Copy etcd tarball
+  become: yes
+  copy:
+    src: etcd-v3.4.13-linux-arm64.tar.gz
+    dest: /home/ubuntu/
+
+- name: Untar the tarball
+  command: tar -xvf /home/ubuntu/etcd-v3.4.13-linux-arm64.tar.gz
+
+- name: Move etcd binary
+  become: yes
+  command: mv /home/ubuntu/etcd-v3.4.13-linux-arm64/etcd /usr/local/bin/
+
+- name: Move etcdctl binary
+  become: yes
+  command: mv /home/ubuntu/etcd-v3.4.13-linux-arm64/etcdctl /usr/local/bin/
+
+- name: Make folders
+  become: yes
+  command: mkdir -p /etc/etcd /var/lib/etcd
+
+- name: Chmod folders
+  become: yes
+  command: chmod 700 /var/lib/etcd
+
+- name: Copy cert files
+  become: yes
+  copy:
+    src: cert/{{ item }}
+    dest: /etc/etcd/
+  with_items:
+    - ca.pem
+    - kubernetes-key.pem
+    - kubernetes.pem
+
+- name: Put etcd.service
+  become: yes
+  template:
+    src: etcd.service.j2
+    dest: /etc/systemd/system/etcd.service
+
+- name: Start etcd daemon
+  become: yes
+  systemd:
+    name: etcd
+    enabled: yes
+    state: restarted
+    daemon_reload: yes

@@ -1,0 +1,34 @@
+- name: download kube-scheduler binary
+  become: yes
+  get_url:
+    url: https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/arm64/kube-scheduler
+    dest: /usr/local/bin/
+    mode: 755
+
+- name: Copy kubeconfig files
+  become: yes
+  copy:
+    src: kubeconfig/{{ item }}
+    dest: /var/lib/kubernetes/
+  with_items:
+    - kube-scheduler.kubeconfig
+
+- name: Put kube-scheduler.yaml
+  become: yes
+  template:
+    src: kube-scheduler.yaml.j2
+    dest: /etc/kubernetes/config/kube-scheduler.yaml
+
+- name: Put kube-scheduler.service
+  become: yes
+  template:
+    src: kube-scheduler.service.j2
+    dest: /etc/systemd/system/kube-scheduler.service
+
+- name: Start kube-scheduler daemon
+  become: yes
+  systemd:
+    name: kube-scheduler
+    enabled: yes
+    state: restarted
+    daemon_reload: yes
